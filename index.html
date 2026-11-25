@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forecast Finder – 14-day weather for any city</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌤️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Forecast Finder</h1>
+    <p class="lead">Plan trips, events and farm or field work with a 14-day forecast for any city.</p>
+
+    <form id="search-form" role="search">
+      <label for="city" class="sr-only">City name</label>
+      <input id="city" type="search" placeholder="Search a city, e.g. Kigali" autocomplete="off" required>
+      <button type="submit">Get forecast</button>
+    </form>
+
+    <div id="matches" class="matches" aria-live="polite"></div>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+
+    <section id="results" hidden>
+      <div class="current">
+        <div>
+          <h2 id="place"></h2>
+          <p id="condition"></p>
+        </div>
+        <p class="big" id="now-temp"></p>
+      </div>
+
+      <div class="controls">
+        <label>Sort by
+          <select id="sort">
+            <option value="date">Date</option>
+            <option value="hot">Hottest first</option>
+            <option value="cold">Coldest first</option>
+            <option value="wet">Most rain first</option>
+          </select>
+        </label>
+        <label>Show
+          <select id="filter">
+            <option value="all">All days</option>
+            <option value="rain">Rain likely (50%+)</option>
+            <option value="dry">Mostly dry (under 30%)</option>
+            <option value="warm">Warm days (25°C+)</option>
+          </select>
+        </label>
+        <button type="button" id="unit" aria-label="Switch temperature unit">°C</button>
+      </div>
+
+      <div id="grid" class="grid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Weather data by <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> (CC BY 4.0).
+       Served by: <strong id="server">checking…</strong></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
