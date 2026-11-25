@@ -24,7 +24,7 @@ Weather data by [Open-Meteo.com](https://open-meteo.com/), licensed under [CC BY
 ## Run locally
 
 ```bash
-git clone https://github.com/<gkarenzi-lang>/<forecast-finder>.git
+git clone https://github.com/gkarenzi-lang/forecast-finder.git
 cd <your-repo>
 python3 -m http.server 8000      # or: npx serve
 ```
