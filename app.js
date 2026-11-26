@@ -1,17 +1,15 @@
-// Forecast Finder – data from Open-Meteo (https://open-meteo.com), no API key required.
 const GEO_URL = "https://geocoding-api.open-meteo.com/v1/search";
 const FORECAST_URL = "https://api.open-meteo.com/v1/forecast";
-const CACHE_MS = 10 * 60 * 1000; // cache API responses for 10 minutes
+const CACHE_MS = 10 * 60 * 1000;
 
 const $ = (sel) => document.querySelector(sel);
 const state = { days: [], unit: "C", sort: "date", filter: "all" };
 
-// ---------- API helper: timeout, error handling, sessionStorage cache ----------
 async function getJSON(url) {
   try {
     const hit = JSON.parse(sessionStorage.getItem(url) || "null");
     if (hit && Date.now() - hit.t < CACHE_MS) return hit.d;
-  } catch { /* ignore broken cache */ }
+  } catch { }
 
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 8000);
@@ -19,7 +17,7 @@ async function getJSON(url) {
     const res = await fetch(url, { signal: ctrl.signal });
     if (!res.ok) throw new Error(`The weather service returned an error (${res.status}). Try again shortly.`);
     const data = await res.json();
-    try { sessionStorage.setItem(url, JSON.stringify({ t: Date.now(), d: data })); } catch { /* storage full */ }
+    try { sessionStorage.setItem(url, JSON.stringify({ t: Date.now(), d: data })); } catch { }
     return data;
   } catch (err) {
     if (err.name === "AbortError") throw new Error("The request timed out. Check your connection and try again.");
@@ -30,7 +28,6 @@ async function getJSON(url) {
   }
 }
 
-// ---------- Weather codes ----------
 function describe(code) {
   if (code === 0) return ["☀️", "Clear sky"];
   if (code <= 2) return ["🌤️", "Partly cloudy"];
@@ -51,7 +48,6 @@ const setStatus = (msg, isError = false) => {
   el.classList.toggle("error", isError);
 };
 
-// ---------- Search flow ----------
 async function searchCity(name) {
   setStatus("Searching…");
   $("#matches").replaceChildren();
@@ -110,7 +106,6 @@ async function loadForecast(place) {
   }
 }
 
-// ---------- Render with sort + filter ----------
 function render() {
   const [, label] = describe(state.current.weather_code);
   $("#condition").textContent = `${label} now · wind ${Math.round(state.current.wind_speed_10m)} km/h`;
@@ -159,7 +154,7 @@ function dayCard(d) {
   rows.forEach(([cls, text]) => {
     const div = document.createElement("div");
     div.className = cls;
-    div.textContent = text; // textContent prevents XSS
+    div.textContent = text;
     if (cls === "temps") {
       const low = document.createElement("span");
       low.textContent = `/ ${temp(d.min)}`;
@@ -170,7 +165,6 @@ function dayCard(d) {
   return el;
 }
 
-// ---------- Events ----------
 $("#search-form").addEventListener("submit", (e) => {
   e.preventDefault();
   const name = $("#city").value.trim();
@@ -180,11 +174,9 @@ $("#sort").addEventListener("change", (e) => { state.sort = e.target.value; rend
 $("#filter").addEventListener("change", (e) => { state.filter = e.target.value; render(); });
 $("#unit").addEventListener("click", () => { state.unit = state.unit === "C" ? "F" : "C"; render(); });
 
-// ---------- Show which server answered (proves load balancing) ----------
 fetch(location.href, { method: "HEAD", cache: "no-store" })
   .then((r) => { $("#server").textContent = r.headers.get("X-Served-By") || "local machine"; })
   .catch(() => { $("#server").textContent = "local machine"; });
 
-// ---------- Start: reload last searched city ----------
 const last = localStorage.getItem("lastCity");
 if (last) { $("#city").value = last; searchCity(last); }
