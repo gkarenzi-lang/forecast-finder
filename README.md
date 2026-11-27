@@ -220,6 +220,11 @@ cd /var/www/forecast && sudo git pull
 
 ## Project structure
 
+Demo Video
+
+Watch the demo here: [https://youtu.be/7xxPDeu5-C0](https://youtu.be/7xxPDeu5-C0)
+
+[![Watch the demo](https://img.youtube.com/vi/7xxPDeu5-C0/maxresdefault.jpg)](https://youtu.be/7xxPDeu5-C0)
 ```
 index.html   page structure
 style.css    responsive styling (light and dark mode)
